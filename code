@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <set>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class RecipeFinder {
+private:
+    map<string, vector<string>> recipes;
+
+public:
+    // Function to add a recipe to the collection
+    void addRecipe(const string& name, const vector<string>& ingredients) {
+        recipes[name] = ingredients;
+    }
+
+    // Function to find recipes based on available ingredients
+    vector<string> findRecipes(const set<string>& availableIngredients) {
+        vector<string> foundRecipes;
+        
+        for (const auto& recipe : recipes) {
+            bool canMake = true;
+            for (const auto& ingredient : recipe.second) {
+                if (availableIngredients.find(ingredient) == availableIngredients.end()) {
+                    canMake = false;
+                    break;
+                }
+            }
+            if (canMake) {
+                foundRecipes.push_back(recipe.first);
+            }
+        }
+        
+        return foundRecipes;
+    }
+
+    // Function to display all recipes
+    void displayRecipes() {
+        for (const auto& recipe : recipes) {
+            cout << "Recipe: " << recipe.first << "\nIngredients: ";
+            for (const auto& ingredient : recipe.second) {
+                cout << ingredient << " ";
+            }
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    RecipeFinder finder;
+    
+    // Adding some recipes
+    finder.addRecipe("Pancakes", {"flour", "milk", "eggs", "sugar", "butter"});
+    finder.addRecipe("Omelette", {"eggs", "milk", "salt", "pepper", "cheese"});
+    finder.addRecipe("Salad", {"lettuce", "tomato", "cucumber", "olive oil", "salt"});
+
+    // Display all recipes
+    finder.displayRecipes();
+
+    // Available ingredients
+    set<string> availableIngredients = {"flour", "milk", "eggs", "sugar", "salt"};
+
+    // Finding recipes that can be made with available ingredients
+    vector<string> foundRecipes = finder.findRecipes(availableIngredients);
+
+    // Display found recipes
+    cout << "\nRecipes you can make:\n";
+    for (const auto& recipe : foundRecipes) {
+        cout << recipe << endl;
+    }
+
+    return 0;
+}
